@@ -5,28 +5,34 @@ public class WordCount {
 
     public static void main(String[] args) {
         try {
-            processText("Boy next door. Three hundred bucks is three hundred bucks. Boy", new String[]{"Boy", "Three", "bucks"});
+            StringBuffer inputText = new StringBuffer("Boys next door. Three hundred bucks is three hundred bucks. Boy Boy. Boyfriend come here. Boy. Boyfriend. Three bucks.");
+            String[] words = {"Boy", "Three", "bucks"};
+
+            processText(inputText, words);
         } catch (Exception e) {
             System.out.println("Виникла помилка: " + e.getMessage());
         }
     }
 
-    public static void processText(String inputText, String[] words) throws IllegalArgumentException {
+    public static void processText(StringBuffer inputText, String[] words) throws IllegalArgumentException {
         try {
             if (inputText == null || words == null || words.length == 0) {
                 throw new IllegalArgumentException("Невірні вхідні дані");
             }
 
-            StringBuffer stringBuffer = new StringBuffer(inputText);
-
             Map<String, Integer> wordCountMap = new HashMap<>();
 
-            String[] sentences = stringBuffer.toString().split("\\.");
+            // divide String Buffer into sentences
+            int start = 0;
+            for (int i = 0; i < inputText.length(); i++) {
+                if (inputText.charAt(i) == '.') {
+                    String sentence = inputText.substring(start, i).trim();
+                    start = i + 1;
 
-            for (String sentence : sentences) {
-                for (String word : words) {
-                    if (sentence.contains(word)) {
-                        wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
+                    for (String word : words) {
+                        if (sentence.matches(".*\\b" + word + "\\b.*")) {
+                            wordCountMap.put(word, wordCountMap.getOrDefault(word, 0) + 1);
+                        }
                     }
                 }
             }
@@ -41,3 +47,4 @@ public class WordCount {
         }
     }
 }
+
